@@ -1,0 +1,104 @@
+<html>
+<head></head>
+<body>
+<form>
+    Name:
+    <br>
+    <input id="cname" type="text" name="name">
+    <br>
+    Grade:
+    <br>
+    <input id="cgrade" type="text" name="grade">
+    <br>
+    <button onclick="postStudent()">Save student</button>
+</form>
+<form>
+    Id required for delete:
+    <br>
+    <input id="cid" type="text" name="id">
+    <br>
+    <button onclick="deleteStudent()">Delete student</button>
+</form>
+<div id="studenttable" class="container">
+    <div class='row' style="display:flex;">
+        <div style="width: 3em;">
+            Id
+        </div>
+        <div style="width: 6em;">
+            Name
+        </div>
+        <div style="width: 3em;">
+            Grade
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    function postStudent(){
+    let cname = $("#cname").val();
+	let cgrade = $("#cgrade").val();
+    let obj = {
+        name : cname,
+        grade : cgrade
+        }
+    $.ajax({
+		  type: "POST",
+		  url: "/poststudent",
+		  data: JSON.stringify(obj),
+		  contentType: "application/json; charset=utf-8",
+		  dataType: "json",
+		  success: function(data) {
+
+		  location.reload();
+		  },
+
+		});
+    }
+
+
+function addToTable(element, index, array) {
+    console.log(element);
+    var text = '<div style="display: flex;">'+
+    '<div style="width: 3em;">' + element.id +'</div>'+
+    '<div style="width: 6em; text-transform : capitalize">' + element.name +'</div>'+
+    '<div style="width: 3em;">' + element.grade + '</div>';
+    $( "#studenttable" ).append(text);
+}
+
+$(document).ready(function(){
+	$.ajax({
+		  url: "/studentAll",
+		  data: '',
+		  success: function(data) {
+			  console.log("success");
+			  console.log(data);
+			  data.forEach(addToTable);
+
+		  },
+		  error: function(data) {
+			  console.log("error");
+			  console.log(data);
+		  },
+		  dataType: "json"
+		});
+});
+
+function deleteStudent() {
+  let cid = $("#cid").val();
+
+  $.ajax({
+    url: '/student/{cid}',
+    type: 'DELETE',
+    console.log("not deleted"),
+    success: function(result) {
+    console.log("deleted")
+    }
+});
+}
+
+
+
+</script>
+
+</body>
+</html>
